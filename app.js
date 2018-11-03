@@ -51,6 +51,6 @@ function postPicture(name) {
             return console.error(err);
         }
 
-        console.log('Upload successful!  Server responded with:', httpResponse);
+        console.log('Upload successful!  Server responded with:', body);
     });
 }
