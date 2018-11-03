@@ -74,8 +74,7 @@ const board = new five.Board({
 
 board.on("ready", function() {
     let dateStr = new Date().toISOString();
-    //takePicture(dateStr);
-    test();
+    takePicture(dateStr);
 });
 
 function takePicture(name) {
@@ -83,9 +82,8 @@ function takePicture(name) {
         if (err) {
             return console.error(err);
         }
-        postPicture(name)
         console.log('Taking Picture Successful!');
-
+        postPicture(name)
     })
 
 }
