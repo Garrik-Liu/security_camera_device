@@ -93,7 +93,7 @@ function takePicture(name) {
 function postPicture(name) {
     var formData = {
         // Pass a simple key-value pair
-        my_field: name,
+        my_field: 'image',
         // Pass data via Buffers
         my_buffer: Buffer.from([1, 2, 3]),
         // Pass data via Streams
