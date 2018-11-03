@@ -5,7 +5,7 @@ const Raspi = require('raspi-io');
 const request = require('request');
 const fs = require('fs');
 
-const serverUrl = "https://home-security-220818.appspot.com";
+const serverUrl = "https://3000-dot-4707804-dot-devshell.appspot.com/";
 
 const app = express();
 const board = new five.Board({
