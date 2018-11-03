@@ -83,7 +83,7 @@ function takePicture(name) {
         if (err) {
             return console.error(err);
         }
-
+        postPicture(name)
         console.log('Taking Picture Successful!');
 
     })
