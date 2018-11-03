@@ -30,7 +30,7 @@ const watchHCSR04 = () => {
 watchHCSR04();
 
 setInterval(() => {
-    trigger.trigger(10, 1); // Set trigger high for 10 microseconds
+    trigger.trigger(15, 1); // Set trigger high for 10 microseconds
 }, 1000);
 
 // const board = new five.Board({
