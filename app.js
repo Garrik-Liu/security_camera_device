@@ -3,69 +3,10 @@ const five = require('johnny-five');
 const Raspi = require('raspi-io');
 const request = require('request');
 const fs = require('fs');
-const jwt = require('jsonwebtoken');
-const mqtt = require('mqtt');
+
 
 const serverUrl = "https://home-security-220818.appspot.com/";
 
-// var projectId = 'home-security-220818';
-// var cloudRegion = 'us-central1';
-// var registryId = 'Pi3-Security_Camera';
-// var deviceId = 'Pi3-Security_Camera';
-
-// var mqttHost = 'mqtt.googleapis.com';
-// var mqttPort = 8883;
-// var privateKeyFile = './certs/rsa_private.pem';
-// var algorithm = 'RS256';
-// var messageType = 'state'; // or event 
-
-// var mqttClientId = 'projects/' + projectId + '/locations/' + cloudRegion + '/registries/' + registryId + '/devices/' + deviceId;
-// var mqttTopic = '/devices/' + deviceId + '/' + messageType;
-
-// var connectionArgs = {
-//     host: mqttHost,
-//     port: mqttPort,
-//     clientId: mqttClientId,
-//     username: 'unused',
-//     password: createJwt(projectId, privateKeyFile, algorithm),
-//     protocol: 'mqtts',
-//     secureProtocol: 'TLSv1_2_method'
-// };
-
-// console.log('connecting...');
-// var client = mqtt.connect(connectionArgs);
-
-// // Subscribe to the /devices/{device-id}/config topic to receive config updates. 
-// client.subscribe('/devices/' + deviceId + '/config');
-
-// client.on('connect', function(success) {
-//     if (success) {
-//         console.log('Client connected...');
-//         client.publish(mqttTopic, { 'message': 'hello' }, { qos: 1 });
-//     } else {
-//         console.log('Client not connected...');
-//     }
-// });
-
-// client.on('close', function() {
-//     console.log('close');
-// });
-
-// client.on('error', function(err) {
-//     console.log('error', err);
-// });
-
-// function createJwt(projectId, privateKeyFile, algorithm) {
-//     var token = {
-//         'iat': parseInt(Date.now() / 1000),
-//         'exp': parseInt(Date.now() / 1000) + 86400 * 60, // 1 day 
-//         'aud': projectId
-//     };
-//     var privateKey = fs.readFileSync(privateKeyFile);
-//     return jwt.sign(token, privateKey, {
-//         algorithm: algorithm
-//     });
-// }
 
 
 const board = new five.Board({
@@ -73,8 +14,25 @@ const board = new five.Board({
 });
 
 board.on("ready", function() {
+    let proximity = new five.Proximity({
+        controller: "HCSR04",
+        pin: 'P1-29'
+    });
+
+    proximity.on("data", function() {
+        console.log("Proximity: ");
+        console.log("  cm  : ", this.cm);
+        console.log("  in  : ", this.in);
+        console.log("-----------------");
+    });
+
+    proximity.on("change", function() {
+        console.log("The obstruction has moved.");
+    });
+
     let dateStr = new Date().toISOString();
-    takePicture(dateStr);
+
+    //takePicture(dateStr);
 });
 
 function takePicture(name) {
