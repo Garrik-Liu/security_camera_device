@@ -22,7 +22,11 @@ const watchHCSR04 = () => {
         } else {
             const endTick = tick;
             const diff = (endTick >> 0) - (startTick >> 0); // Unsigned 32 bit arithmetic
-            console.log(diff / 2 / MICROSECDONDS_PER_CM + 'cm');
+            const distance = diff / 2 / MICROSECDONDS_PER_CM;
+
+            if (distance > 1) {
+                console.log(distance + 'cm');
+            }
         }
     });
 };
