@@ -6,7 +6,7 @@ const fs = require('fs');
 const jwt = require('jsonwebtoken');
 const mqtt = require('mqtt');
 
-const serverUrl = "https://3000-dot-4707804-dot-devshell.appspot.com/";
+const serverUrl = "https://home-security-220818.appspot.com/";
 
 // var projectId = 'home-security-220818';
 // var cloudRegion = 'us-central1';
