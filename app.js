@@ -111,4 +111,3 @@ function postPicture(name) {
         console.log(body)
     });
 }
-}
