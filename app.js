@@ -30,7 +30,7 @@ function takePicture(name) {
 
         console.log('Taking Picture Successful!');
 
-        postPicture(name);
+        //postPicture(name);
     })
 
 }
