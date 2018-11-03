@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "home-security-220818",
+  "private_key_id": "043dca80ccfdbd41720b164d6d547fa7edf3083b",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQDUCjZSPeQtFvbX\nOWyaLSWoiMUg+UoM57NQa++KZ/E/ezVbz1UNaJ8/FLvMmdEc2BWjkMGWfMN1ytIT\nlHV94CcyW4iNMeIEYs88RISEBFIG1mS+i1Owm2tibYCOW4D3ENCo1J/COenFpfmL\nmj1PY4LPUE3KR+pCOBsLiH1wQ7IqlUhPtY37jRvFvc7xPz1OkIBOS5WGI5qKHuNR\nY0LgVXWIu6zqZigQPa1QQl34MZLoBE5fTHg48zcYknScHx5t+mv22FxMoEDEw7OU\nUX26L4+Pu0r8QUMGKegxS9bCORbgisdQji3s7RFLpRMCQS8StVpwSRBw7ZMsEP+8\nWyv5DkVNAgMBAAECggEAMGMqNUdZaC664q+AiIhv9Q9NCPLKgrpnMZ2H+uowY/+u\nVAayzo4G9SK6nnylezMWcQ6KFtje0+UWXpB85V4/I58+wJXXEZAo4YRzRxsjStsm\n/1KVJRK6hSoe8Z2RBxCHxVdMI8sKfWecVE682f6H7d5R+izCGR1rkoyxr2pLYKro\n1Bx4m5jL68LHfSWR47IW7eQURhAkfs1qaBN0XdaVpJcQ+paU6jhphNgDI1HiiYUJ\nvjUbiPjc68CtkN+QjSOx1WQspEub9zgN3riUg5BlcHWEaj16JZmfqcaEVsl6fkv6\nfKDNm+93jCED3Cu2V6rDqlU7QXEkwnUqYA4DYVPPwQKBgQD5GlS+NEvQlgZk/kM0\nPPJBBmd/IUDtuNphmSr1H1jHX2SZAy71DhCNhHdjb052lGZDbhOyOLzLTEJ8J1yW\nWnmAdDI93lmrlL2s8Mgim65Y0XwWloayuoa7AZpg9ZX3viTtnRwLyuk1/Mqn1041\nmUJSyx+UQdmHvt3nP525GKf7YQKBgQDZ6Sy6YV+mtC9Z/zj0r5qf7SAkJ3GdAquK\np7IG4fKQcU6PhdMqMkd9Uki9qM1fumxn/Q+gpACsk7zObo+mtoJDnvYFxgqHwNqb\nIvN9GEaJAOcpyekVDpvsOjERmxF0tVWipA+TV/WbUBN2dBuccXHyHklxHU/moYDU\nL1QKZPZdbQKBgQDeIZ3Z8vZ8bZwMKTQye/qnA5f9JOEqW0HZ8GT/KtHXD/i7/bu8\n6KrYF30DHXmBgnnivWEw9ylbvIg5ADyvEsTwSC2ZQBMET2IIurotKliBeWTHG7nH\n3U9RqW9J8RWnU1bI0OX2mh32d5MbsoJah20+OUXSxhm90/U7Rl5WdWcuYQKBgAo3\nvcorgLGvZz0AE6qdhVGUa9pmIxSqqGKDBH0AIUCWn4lpTAKBgwqkThbekGq5shWa\nLx5oMkPlVYgUdRXrHuaO0JhqtdmxuE5n8CTge4Y3DZ/PAOfk3HjSLbTWoZXoXtCW\ngsh06mZS9earARRv2VjyBJ2SM0nsLr9ETNuD6m1tAoGBAOmJGw9H56qpNqRCevxA\nC0JjNhTtfpKv7FNUlNHa8/1apsFOirfe7UnbBREQX1CRs0j7gPTIB5EGuG4034de\nBfX1ehJHyelTzdmxMZAo1C8ns1UPPK80ajiIylnzlR6EKTZyLA/nJ62TzPRtNyWo\n63mHEM4WsH3Dfg9DX5eErnyE\n-----END PRIVATE KEY-----\n",
+  "client_email": "security-camera-device@home-security-220818.iam.gserviceaccount.com",
+  "client_id": "117912300569236883892",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/security-camera-device%40home-security-220818.iam.gserviceaccount.com"
+}
