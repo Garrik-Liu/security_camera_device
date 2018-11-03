@@ -13,8 +13,8 @@ const board = new five.Board({
 });
 
 board.on("ready", function() {
-    let date = new Date();
-    takePicture(date);
+    let dateStr = new Date().toISOString();
+    takePicture(dateStr);
 });
 
 app.listen('3000', () => {
