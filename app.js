@@ -13,7 +13,8 @@ const board = new five.Board({
 });
 
 board.on("ready", function() {
-    takePicture('1234');
+    let date = new Date();
+    takePicture(date);
 });
 
 app.listen('3000', () => {
@@ -29,7 +30,7 @@ function takePicture(name) {
 
         console.log('Taking Picture Successful!');
 
-        //postPicture(name);
+        postPicture(name);
     })
 
 }
