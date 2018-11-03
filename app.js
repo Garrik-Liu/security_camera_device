@@ -90,13 +90,7 @@ function takePicture(name) {
 
 function postPicture(name) {
     var formData = {
-        // Pass a simple key-value pair
-        my_field: 'image',
-        // Pass data via Buffers
-        my_buffer: Buffer.from([1, 2, 3]),
-        // Pass data via Streams
-        my_file: fs.createReadStream(__dirname + '/snapshots/' + name + '.png'),
-        // Pass multiple values /w an Array
+        image: fs.createReadStream(__dirname + '/snapshots/' + name + '.png'),
     };
     console.log(serverUrl + 'images/add');
     request.post({ url: serverUrl + 'images/add', formData: formData }, function optionalCallback(err, response, body) {
