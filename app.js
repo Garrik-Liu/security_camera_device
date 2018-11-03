@@ -15,7 +15,7 @@ var deviceId = 'Pi3-Security_Camera';
 
 var mqttHost = 'mqtt.googleapis.com';
 var mqttPort = 8883;
-var privateKeyFile = '../certs/rsa_private.pem';
+var privateKeyFile = './certs/rsa_private.pem';
 var algorithm = 'RS256';
 var messageType = 'state'; // or event 
 
