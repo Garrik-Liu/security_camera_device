@@ -74,8 +74,8 @@ const board = new five.Board({
 
 board.on("ready", function() {
     let dateStr = new Date().toISOString();
-    takePicture(dateStr);
-    //test();
+    //takePicture(dateStr);
+    test();
 });
 
 function takePicture(name) {
@@ -109,5 +109,13 @@ function postPicture(name) {
         console.log('error:', err); // Print the error if one occurred
         console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
         console.log(body)
+    });
+}
+
+function test() {
+    request(serverUrl + 'test', function(error, response, body) {
+        console.log('error:', error); // Print the error if one occurred
+        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        console.log('body:', body); // Print the HTML for the Google homepage.
     });
 }
