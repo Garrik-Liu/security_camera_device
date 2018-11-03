@@ -45,12 +45,12 @@ function postPicture(name) {
         my_file: fs.createReadStream(__dirname + '/snapshots/' + name + '.png'),
         // Pass multiple values /w an Array
     };
-
+    console.log(serverUrl + '/images/add');
     request.post({ url: serverUrl + '/images/add', formData: formData }, function optionalCallback(err, httpResponse, body) {
         if (err) {
             return console.error(err);
         }
 
-        console.log('Upload successful!  Server responded with:', body);
+        console.log('Upload successful!  Server responded with:', httpResponse);
     });
 }
