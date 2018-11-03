@@ -1,39 +1,63 @@
 const exec = require('child_process').exec;
 const five = require('johnny-five');
 const Raspi = require('raspi-io');
+const Gpio = require('pigpio').Gpio;
 const request = require('request');
 const fs = require('fs');
 
-
+const MICROSECDONDS_PER_CM = 1e6 / 34321;
 const serverUrl = "https://home-security-220818.appspot.com/";
 
+const trigger = new Gpio(23, { mode: Gpio.OUTPUT });
+const echo = new Gpio(24, { mode: Gpio.INPUT, alert: true });
 
+trigger.digitalWrite(0); // Make sure trigger is low
 
-const board = new five.Board({
-    io: new Raspi()
-});
+const watchHCSR04 = () => {
+    let startTick;
 
-board.on("ready", function() {
-    let proximity = new five.Proximity({
-        controller: "HCSR04",
-        pin: 'P1-29'
+    echo.on('alert', (level, tick) => {
+        if (level == 1) {
+            startTick = tick;
+        } else {
+            const endTick = tick;
+            const diff = (endTick >> 0) - (startTick >> 0); // Unsigned 32 bit arithmetic
+            console.log(diff / 2 / MICROSECDONDS_PER_CM);
+        }
     });
+};
 
-    proximity.on("data", function() {
-        console.log("Proximity: ");
-        console.log("  cm  : ", this.cm);
-        console.log("  in  : ", this.in);
-        console.log("-----------------");
-    });
+watchHCSR04();
 
-    proximity.on("change", function() {
-        console.log("The obstruction has moved.");
-    });
+setInterval(() => {
+    trigger.trigger(10, 1); // Set trigger high for 10 microseconds
+}, 1000);
 
-    let dateStr = new Date().toISOString();
+// const board = new five.Board({
+//     io: new Raspi()
+// });
 
-    //takePicture(dateStr);
-});
+// board.on("ready", function() {
+//     let proximity = new five.Proximity({
+//         controller: "HCSR04",
+//         pin: 'P1-29'
+//     });
+
+//     proximity.on("data", function() {
+//         console.log("Proximity: ");
+//         console.log("  cm  : ", this.cm);
+//         console.log("  in  : ", this.in);
+//         console.log("-----------------");
+//     });
+
+//     proximity.on("change", function() {
+//         console.log("The obstruction has moved.");
+//     });
+
+//     let dateStr = new Date().toISOString();
+
+//     //takePicture(dateStr);
+// });
 
 function takePicture(name) {
     exec("fswebcam " + __dirname + "/snapshots/" + name + ".png", (err, stdout, stderr) => {
