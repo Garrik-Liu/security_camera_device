@@ -16,7 +16,7 @@ var deviceId = 'Pi3-Security_Camera';
 var mqttHost = 'mqtt.googleapis.com';
 var mqttPort = 8883;
 var privateKeyFile = './certs/rsa_private.pem';
-var algorithm = 'RS256';
+var algorithm = 'RS256_X509';
 var messageType = 'state'; // or event 
 
 var mqttClientId = 'projects/' + projectId + '/locations/' + cloudRegion + '/registries/' + registryId + '/devices/' + deviceId;
@@ -41,6 +41,7 @@ client.subscribe('/devices/' + deviceId + '/config');
 client.on('connect', function(success) {
     if (success) {
         console.log('Client connected...');
+        client.publish(mqttTopic, { 'message': 'hello' }, { qos: 1 });
     } else {
         console.log('Client not connected...');
     }
