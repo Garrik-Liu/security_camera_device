@@ -19,6 +19,8 @@
   "dependencies": {
     "express": "^4.16.4",
     "johnny-five": "^1.0.0",
+    "jsonwebtoken": "^8.3.0",
+    "mqtt": "^2.18.8",
     "raspi-io": "^9.0.0",
     "request": "^2.88.0"
   }
