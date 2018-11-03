@@ -106,16 +106,9 @@ function postPicture(name) {
             return console.error(err);
         }
 
-        console.log('error:', error); // Print the error if one occurred
+        console.log('error:', err); // Print the error if one occurred
         console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
         console.log(body)
     });
 }
-
-function test() {
-    request(serverUrl + 'test', function(error, response, body) {
-        console.log('error:', error); // Print the error if one occurred
-        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-        console.log(body)
-    });
 }
