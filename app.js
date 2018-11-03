@@ -101,12 +101,14 @@ function postPicture(name) {
         // Pass multiple values /w an Array
     };
     console.log(serverUrl + 'images/add');
-    request.post({ url: serverUrl + 'images/add', formData: formData }, function optionalCallback(err, httpResponse, body) {
+    request.post({ url: serverUrl + 'images/add', formData: formData }, function optionalCallback(err, response, body) {
         if (err) {
             return console.error(err);
         }
 
-        console.log('Upload successful!  Server responded with:', body);
+        console.log('error:', error); // Print the error if one occurred
+        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        console.log(body)
     });
 }
 
