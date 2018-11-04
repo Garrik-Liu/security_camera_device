@@ -15,6 +15,7 @@ trigger.digitalWrite(0); // Make sure trigger is low
 
 const watchHCSR04 = () => {
     let startTick;
+    let initialDistance;
 
     echo.on('alert', (level, tick) => {
         if (level == 1) {
@@ -26,6 +27,17 @@ const watchHCSR04 = () => {
 
             if (distance > 1) {
                 console.log(distance + 'cm');
+
+                if (!initialDistance) {
+                    initialDistance = distance;
+                } else {
+                    let diff = Math.abs(distance - initialDistance);
+
+                    if (diff > 5) {
+                        let dateStr = new Date().toISOString();
+                        takePicture(dateStr);
+                    }
+                }
             }
         }
     });
@@ -87,13 +99,5 @@ function postPicture(name) {
         console.log('error:', err); // Print the error if one occurred
         console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
         console.log(body)
-    });
-}
-
-function test() {
-    request(serverUrl + 'test', function(error, response, body) {
-        console.log('error:', error); // Print the error if one occurred
-        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-        console.log('body:', body); // Print the HTML for the Google homepage.
     });
 }
