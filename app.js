@@ -49,32 +49,6 @@ setInterval(() => {
     trigger.trigger(10, 1); // Set trigger high for 10 microseconds
 }, 200);
 
-// const board = new five.Board({
-//     io: new Raspi()
-// });
-
-// board.on("ready", function() {
-//     let proximity = new five.Proximity({
-//         controller: "HCSR04",
-//         pin: 'P1-29'
-//     });
-
-//     proximity.on("data", function() {
-//         console.log("Proximity: ");
-//         console.log("  cm  : ", this.cm);
-//         console.log("  in  : ", this.in);
-//         console.log("-----------------");
-//     });
-
-//     proximity.on("change", function() {
-//         console.log("The obstruction has moved.");
-//     });
-
-//     let dateStr = new Date().toISOString();
-
-//     //takePicture(dateStr);
-// });
-
 function takePicture(name) {
     exec("fswebcam " + __dirname + "/snapshots/" + name + ".png", (err, stdout, stderr) => {
         if (err) {
@@ -98,6 +72,12 @@ function postPicture(name) {
 
         console.log('error:', err); // Print the error if one occurred
         console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-        console.log(body)
+        console.log(body);
+
+        exec("rm -f " + __dirname + "/snapshots/" + name + ".png", (err, stdout, stderr) => {
+            if (err) {
+                return console.error(err);
+            }
+        })
     });
 }
