@@ -6,7 +6,7 @@ const request = require('request');
 const fs = require('fs');
 
 const MICROSECDONDS_PER_CM = 1e6 / 34321;
-const serverUrl = "https://3000-dot-4707804-dot-devshell.appspot.com/";
+const serverUrl = "https://home-security-220818.appspot.com/";
 
 const trigger = new Gpio(23, { mode: Gpio.OUTPUT });
 const echo = new Gpio(24, { mode: Gpio.INPUT, alert: true });
@@ -46,6 +46,13 @@ function postPicture(name) {
         console.log('error:', err); // Print the error if one occurred
         console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
         console.log(body);
+
+        exec("rm -f " + __dirname + "/snapshots/" + name + ".png", (err, stdout, stderr) => {
+            if (err) {
+                return console.error(err);
+            }
+            console.log('Picture is deleted!');
+        })
 
 
     });
