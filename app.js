@@ -74,10 +74,6 @@ function postPicture(name) {
         console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
         console.log(body);
 
-        exec("rm -f " + __dirname + "/snapshots/" + name + ".png", (err, stdout, stderr) => {
-            if (err) {
-                return console.error(err);
-            }
-        })
+
     });
 }
