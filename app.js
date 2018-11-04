@@ -35,7 +35,7 @@ const watchHCSR04 = () => {
 
                     if (diff > 5) {
                         let dateStr = new Date().toISOString();
-                        takePicture(dateStr);
+                        //takePicture(dateStr);
                     }
                 }
             }
