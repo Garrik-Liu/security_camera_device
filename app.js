@@ -6,7 +6,7 @@ const request = require('request');
 const fs = require('fs');
 
 const MICROSECDONDS_PER_CM = 1e6 / 34321;
-const serverUrl = "https://3000-dot-4707804-dot-devshell.appspot.com/";
+const serverUrl = "https://home-security-220818.appspot.com/";
 
 const trigger = new Gpio(23, { mode: Gpio.OUTPUT });
 const echo = new Gpio(24, { mode: Gpio.INPUT, alert: true });
