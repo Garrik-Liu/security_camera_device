@@ -42,7 +42,7 @@ setInterval(() => {
         console.log(count);
 
         if (detectObj.motion) {
-            postPicture('snapshot' + count - 1);
+            postPicture('snapshot' + count);
         }
 
         if (count > 5 && !detectObj.motion) {
@@ -78,11 +78,11 @@ function postPicture(name) {
     };
 
     request.post({ url: serverUrl + 'images/add', formData: formData }, function optionalCallback(err, response, body) {
+        detectObj.motion = false;
+
         if (err) {
             return console.error(err);
         }
-
-        detectObj.motion = false;
 
         console.log('error:', err); // Print the error if one occurred
         console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
