@@ -15,7 +15,7 @@ exec('ffmpeg -f v4l2 -framerate 30 -video_size 640x360 -i /dev/video0 -f mpegts 
     if (err) {
         return console.error(err);
     }
-
+    console.log('data : ' + stdout);
     console.log('Streaming......');
 });
 
@@ -78,7 +78,7 @@ function watchHCSR04() {
             const distance = diff / 2 / MICROSECDONDS_PER_CM;
 
             if (distance > 1) {
-                console.log(distance + 'cm');
+                //console.log(distance + 'cm');
 
                 if (!prevDistance) {
                     prevDistance = distance;
