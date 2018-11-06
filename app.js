@@ -51,6 +51,8 @@ setInterval(() => {
                 let filename = stdout;
 
                 postPicture(filename.trim());
+
+                detectObj.motion = false;
             })
         }
 
@@ -87,7 +89,6 @@ function postPicture(name) {
     };
 
     request.post({ url: serverUrl + 'images/add', formData: formData }, function optionalCallback(err, response, body) {
-        detectObj.motion = false;
 
         if (err) {
             return console.error(err);
