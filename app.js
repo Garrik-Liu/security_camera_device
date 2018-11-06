@@ -43,7 +43,7 @@ setInterval(() => {
 
         if (detectObj.motion) {
             detectObj.motion = false;
-            postPicture('snapshot' + count);
+            postPicture('snapshot' + count - 1);
         }
 
         if (count > 5) {
