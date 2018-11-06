@@ -33,7 +33,7 @@ watchHCSR04();
 setInterval(() => {
     trigger.trigger(10, 1); // Set trigger high for 10 microseconds
     if (detectObj.motion) {
-        exec('cd ' + __dirname + '/snapshots | ls -l | grep "^-" | wc -l', (err, stdout, stderr) => {
+        exec('ls ' + __dirname + '/snapshots -l | grep "^-" | wc -l', (err, stdout, stderr) => {
             if (err) {
                 return console.error(err);
             }
