@@ -67,7 +67,7 @@ function postPicture(name) {
 
 function watchHCSR04() {
     let startTick;
-    let initialDistance;
+    let prevDistance;
 
     echo.on('alert', (level, tick) => {
         if (level == 1) {
@@ -80,12 +80,12 @@ function watchHCSR04() {
             if (distance > 1) {
                 console.log(distance + 'cm');
 
-                if (!initialDistance) {
-                    initialDistance = distance;
+                if (!prevDistance) {
+                    prevDistance = distance;
                 } else {
-                    let diff = Math.abs(distance - initialDistance);
-
-                    if (diff > 5) {
+                    let diff = Math.abs(distance - prevDistance);
+                    prevDistance = distance;
+                    if (diff > 10) {
                         let dateStr = new Date().toISOString();
 
                         takePicture(dateStr);
