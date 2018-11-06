@@ -75,7 +75,6 @@ setInterval(() => {
 
 function postPicture(name) {
     var formData = {
-        time: new Date(),
         image: fs.createReadStream(__dirname + '/snapshots/' + name),
     };
 
