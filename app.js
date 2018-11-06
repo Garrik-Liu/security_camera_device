@@ -48,6 +48,8 @@ setInterval(() => {
 
             let filename = stdout;
 
+            console.log(filename);
+
             if (detectObj.motion) {
                 postPicture(filename);
             }
