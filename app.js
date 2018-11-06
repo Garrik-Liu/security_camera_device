@@ -11,7 +11,9 @@ const trigger = new Gpio(23, { mode: Gpio.OUTPUT });
 const echo = new Gpio(24, { mode: Gpio.INPUT, alert: true });
 
 const detectObj = {
-    motion: false
+    motion: false,
+    prevTime: null,
+    curTime: null
 }
 
 exec(
@@ -50,7 +52,10 @@ setInterval(() => {
 
                 let filename = stdout;
 
-                postPicture(filename.trim());
+                if ((detectObj.curTime - detectObj.prevTime) >= 5000) {
+                    postPicture(filename.trim());
+                    detectObj.prevTime = detectObj.curTime;
+                }
 
                 detectObj.motion = false;
             })
@@ -71,18 +76,6 @@ setInterval(() => {
     });
 }, 200);
 
-// function takePicture(name) {
-//     exec("fswebcam " + __dirname + "/snapshots/" + name + ".png", (err, stdout, stderr) => {
-//         if (err) {
-//             return console.error(err);
-//         }
-
-//         console.log('Taking Picture Successful!');
-
-//         //postPicture(name)
-//     })
-// }
-
 function postPicture(name) {
     var formData = {
         image: fs.createReadStream(__dirname + '/snapshots/' + name),
@@ -97,14 +90,6 @@ function postPicture(name) {
         console.log('error:', err); // Print the error if one occurred
         console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
         console.log(body);
-
-        // exec("rm -f " + __dirname + "/snapshots/" + name + ".png", (err, stdout, stderr) => {
-        //     if (err) {
-        //         return console.error(err);
-        //     }
-        //     console.log('Picture is deleted!');
-        // })
-
 
     });
 }
@@ -130,10 +115,15 @@ function watchHCSR04() {
                     let diff = Math.abs(distance - prevDistance);
                     prevDistance = distance;
                     if (diff > 10) {
-                        let dateStr = new Date().toISOString();
                         console.log('A motion is detected.');
+
                         detectObj.motion = true;
-                        //takePicture(dateStr);
+                        if (!detectObj.prevTime) {
+                            detectObj.prevTime = new Date();
+                        } else {
+                            detectObj.curTime = new Date();
+                        }
+
                     }
                 }
             }
