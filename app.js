@@ -50,7 +50,7 @@ setInterval(() => {
 
                 let filename = stdout;
 
-                postPicture(trim(filename));
+                postPicture(filename.trim());
             })
         }
 
