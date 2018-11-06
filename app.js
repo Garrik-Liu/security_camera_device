@@ -42,11 +42,10 @@ setInterval(() => {
         console.log(count);
 
         if (detectObj.motion) {
-            detectObj.motion = false;
             postPicture('snapshot' + count - 1);
         }
 
-        if (count > 5) {
+        if (count > 5 && !detectObj.motion) {
             console.log('数量大于5...')
             exec('sudo rm ' + __dirname + '/snapshots/*.png', (err, stdout, stderr) => {
                 if (err) {
@@ -61,17 +60,17 @@ setInterval(() => {
     });
 }, 200);
 
-function takePicture(name) {
-    exec("fswebcam " + __dirname + "/snapshots/" + name + ".png", (err, stdout, stderr) => {
-        if (err) {
-            return console.error(err);
-        }
+// function takePicture(name) {
+//     exec("fswebcam " + __dirname + "/snapshots/" + name + ".png", (err, stdout, stderr) => {
+//         if (err) {
+//             return console.error(err);
+//         }
 
-        console.log('Taking Picture Successful!');
+//         console.log('Taking Picture Successful!');
 
-        //postPicture(name)
-    })
-}
+//         //postPicture(name)
+//     })
+// }
 
 function postPicture(name) {
     var formData = {
@@ -82,6 +81,8 @@ function postPicture(name) {
         if (err) {
             return console.error(err);
         }
+
+        detectObj.motion = false;
 
         console.log('error:', err); // Print the error if one occurred
         console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
