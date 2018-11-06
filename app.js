@@ -10,11 +10,17 @@ const serverUrl = "http://35.237.140.171/";
 const trigger = new Gpio(23, { mode: Gpio.OUTPUT });
 const echo = new Gpio(24, { mode: Gpio.INPUT, alert: true });
 
-exec('ffmpeg -f v4l2 -framerate 30 -video_size 640x360 -i /dev/video0 -f mpegts -codec:v mpeg1video -b:v 1800k -r 30 http://35.243.158.28:80/123456 -vf fps=1 ./images/out%d.png', (err, stdout, stderr) => {
-    if (err) {
-        return console.error(err);
+exec(
+    "ffmpeg -f v4l2 -framerate 30 -video_size 640x360 " +
+    "-i /dev/video0 -f mpegts -codec:v mpeg1video -b:v 1800k -r 30 " +
+    "http://35.243.158.28:80/123456 " +
+    "-vf fps=10/1 ./snapshots/out%d.png",
+    (err, stdout, stderr) => {
+        if (err) {
+            return console.error(err);
+        }
     }
-});
+);
 
 trigger.digitalWrite(0); // Make sure trigger is low
 
@@ -32,7 +38,7 @@ function takePicture(name) {
 
         console.log('Taking Picture Successful!');
 
-        postPicture(name)
+        //postPicture(name)
     })
 }
 
