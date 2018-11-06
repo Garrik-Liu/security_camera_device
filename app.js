@@ -41,22 +41,28 @@ setInterval(() => {
 
         console.log(count);
 
-        if (detectObj.motion) {
-            postPicture('snapshot' + count);
-        }
+        exec('ls -Art | tail -n 1', (err, stdout, stderr) => {
+            if (err) {
+                return console.error(err);
+            }
 
-        if (count > 5 && !detectObj.motion) {
-            console.log('数量大于5...')
-            exec('sudo rm ' + __dirname + '/snapshots/*.png', (err, stdout, stderr) => {
-                if (err) {
-                    return console.error(err);
-                }
+            let filename = stdout;
 
-                console.log('清空文件夹')
-            })
-        }
+            if (detectObj.motion) {
+                postPicture(filename);
+            }
 
+            if (count > 5 && !detectObj.motion) {
+                console.log('数量大于5...')
+                exec('sudo rm ' + __dirname + '/snapshots/*.png', (err, stdout, stderr) => {
+                    if (err) {
+                        return console.error(err);
+                    }
 
+                    console.log('清空文件夹')
+                })
+            }
+        })
     });
 }, 200);
 
@@ -74,7 +80,7 @@ setInterval(() => {
 
 function postPicture(name) {
     var formData = {
-        image: fs.createReadStream(__dirname + '/snapshots/' + name + '.png'),
+        image: fs.createReadStream(__dirname + '/snapshots/' + name),
     };
 
     request.post({ url: serverUrl + 'images/add', formData: formData }, function optionalCallback(err, response, body) {
