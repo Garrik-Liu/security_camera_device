@@ -41,30 +41,33 @@ setInterval(() => {
 
         console.log(count);
 
-        exec('ls -Art ' + __dirname + '/snapshots | tail -n 1', (err, stdout, stderr) => {
-            if (err) {
-                return console.error(err);
-            }
 
-            let filename = stdout;
+        if (detectObj.motion) {
+            exec('ls -Art ' + __dirname + '/snapshots | tail -n 1', (err, stdout, stderr) => {
+                if (err) {
+                    return console.error(err);
+                }
 
-            console.log(filename);
+                let filename = stdout;
 
-            if (detectObj.motion) {
+                console.log(filename);
+
                 postPicture(filename);
-            }
+            })
+        }
 
-            if (count > 5 && !detectObj.motion) {
-                console.log('数量大于5...')
-                exec('sudo rm ' + __dirname + '/snapshots/*.png', (err, stdout, stderr) => {
-                    if (err) {
-                        return console.error(err);
-                    }
+        if (count > 5 && !detectObj.motion) {
+            console.log('数量大于5...')
+            exec('sudo rm ' + __dirname + '/snapshots/*.png', (err, stdout, stderr) => {
+                if (err) {
+                    return console.error(err);
+                }
 
-                    console.log('清空文件夹')
-                })
-            }
-        })
+                console.log('清空文件夹')
+            })
+        }
+
+
     });
 }, 200);
 
