@@ -1,6 +1,5 @@
 const exec = require('child_process').exec;
-const five = require('johnny-five');
-const Raspi = require('raspi-io');
+const spawn = require('child_process').spawn;
 const Gpio = require('pigpio').Gpio;
 const request = require('request');
 const fs = require('fs');
@@ -13,11 +12,8 @@ const echo = new Gpio(24, { mode: Gpio.INPUT, alert: true });
 
 exec('ffmpeg -f v4l2 -framerate 30 -video_size 640x360 -i /dev/video0 -f mpegts -codec:v mpeg1video -b 1800k -r 30 http://35.243.158.28:80/123456', (err, stdout, stderr) => {
     if (err) {
-        console.log(1);
         return console.error(err);
     }
-    console.log('data : ' + stdout);
-    console.log('Streaming......');
 });
 
 trigger.digitalWrite(0); // Make sure trigger is low
@@ -33,12 +29,11 @@ function takePicture(name) {
         if (err) {
             return console.error(err);
         }
-
+        console.log(stdout)
         console.log('Taking Picture Successful!');
 
         postPicture(name)
     })
-
 }
 
 function postPicture(name) {
