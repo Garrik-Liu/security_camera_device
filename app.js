@@ -30,6 +30,7 @@ setInterval(() => {
 function takePicture(name) {
     exec("fswebcam " + __dirname + "/snapshots/" + name + ".png", (err, stdout, stderr) => {
         if (err) {
+            console.log(1);
             return console.error(err);
         }
 
