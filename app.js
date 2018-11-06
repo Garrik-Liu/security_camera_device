@@ -32,15 +32,33 @@ watchHCSR04();
 
 setInterval(() => {
     trigger.trigger(10, 1); // Set trigger high for 10 microseconds
-    if (detectObj.motion) {
-        exec('ls ' + __dirname + '/snapshots -l | grep "^-" | wc -l', (err, stdout, stderr) => {
-            if (err) {
-                return console.error(err);
-            }
+    exec('ls ' + __dirname + '/snapshots -l | grep "^-" | wc -l', (err, stdout, stderr) => {
+        if (err) {
+            return console.error(err);
+        }
 
-            console.log(stdout, Number(stdout));
-        });
-    }
+        let count = Number(stdout);
+
+        console.log(count);
+
+        if (detectObj.motion) {
+            detectObj.motion = false;
+            postPicture('snapshot' + count);
+        }
+
+        if (count > 5) {
+            console.log('数量大于5...')
+            exec('sudo rm ' + __dirname + '/snapshots/*.png', (err, stdout, stderr) => {
+                if (err) {
+                    return console.error(err);
+                }
+
+                console.log('清空文件夹')
+            })
+        }
+
+
+    });
 }, 200);
 
 function takePicture(name) {
@@ -69,12 +87,12 @@ function postPicture(name) {
         console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
         console.log(body);
 
-        exec("rm -f " + __dirname + "/snapshots/" + name + ".png", (err, stdout, stderr) => {
-            if (err) {
-                return console.error(err);
-            }
-            console.log('Picture is deleted!');
-        })
+        // exec("rm -f " + __dirname + "/snapshots/" + name + ".png", (err, stdout, stderr) => {
+        //     if (err) {
+        //         return console.error(err);
+        //     }
+        //     console.log('Picture is deleted!');
+        // })
 
 
     });
