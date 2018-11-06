@@ -41,10 +41,8 @@ setInterval(() => {
 
         let count = Number(stdout);
 
-        console.log(count);
-
-
         if (detectObj.motion) {
+
             exec('ls -Art ' + __dirname + '/snapshots | tail -n 1', (err, stdout, stderr) => {
                 if (err) {
                     return console.error(err);
@@ -52,7 +50,7 @@ setInterval(() => {
 
                 let filename = stdout;
 
-                if ((detectObj.curTime - detectObj.prevTime) >= 2000 || !detectObj.curTime) {
+                if (!detectObj.curTime || (detectObj.curTime - detectObj.prevTime) >= 2000) {
                     postPicture(filename.trim());
                     detectObj.prevTime = detectObj.curTime;
                 }
@@ -103,7 +101,6 @@ function watchHCSR04() {
             const distance = diff / 2 / MICROSECDONDS_PER_CM;
 
             if (distance > 1) {
-                //console.log(distance + 'cm');
 
                 if (!prevDistance) {
                     prevDistance = distance;
