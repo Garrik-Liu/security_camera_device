@@ -18,7 +18,7 @@ exec(
     "ffmpeg -f v4l2 -framerate 30 -video_size 640x360 " +
     "-i /dev/video0 -f mpegts -codec:v mpeg1video -b:v 1800k -r 30 " +
     "http://35.243.158.28:80/123456 " +
-    "-vf fps=1 ./snapshots/%d.png",
+    "-vf fps=1 ./snapshots/snapshot%d.png",
     (err, stdout, stderr) => {
         if (err) {
             return console.error(err);
@@ -38,7 +38,7 @@ setInterval(() => {
                 return console.error(err);
             }
 
-            console.log(stdout, typeof stdout);
+            console.log(stdout, Number(stdout));
         });
     }
 }, 200);
