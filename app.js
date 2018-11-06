@@ -107,6 +107,7 @@ function watchHCSR04() {
                 } else {
                     let diff = Math.abs(distance - prevDistance);
                     prevDistance = distance;
+                    console.log(diff)
                     if (diff > 10) {
                         console.log('A motion is detected.');
 
