@@ -41,7 +41,7 @@ setInterval(() => {
 
         console.log(count);
 
-        exec('ls -Art | tail -n 1', (err, stdout, stderr) => {
+        exec('ls -Art ' + __dirname + '/snapshots | tail -n 1', (err, stdout, stderr) => {
             if (err) {
                 return console.error(err);
             }
