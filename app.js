@@ -10,11 +10,15 @@ const serverUrl = "http://35.237.140.171/";
 const trigger = new Gpio(23, { mode: Gpio.OUTPUT });
 const echo = new Gpio(24, { mode: Gpio.INPUT, alert: true });
 
+const detectObj = {
+    motion: false
+}
+
 exec(
     "ffmpeg -f v4l2 -framerate 30 -video_size 640x360 " +
     "-i /dev/video0 -f mpegts -codec:v mpeg1video -b:v 1800k -r 30 " +
     "http://35.243.158.28:80/123456 " +
-    "-vf fps=10/1 ./snapshots/out%d.png",
+    "-vf fps=1 ./snapshots/%d.png",
     (err, stdout, stderr) => {
         if (err) {
             return console.error(err);
@@ -28,6 +32,15 @@ watchHCSR04();
 
 setInterval(() => {
     trigger.trigger(10, 1); // Set trigger high for 10 microseconds
+    if (detectObj.motion) {
+        exec('ls ./snapshots -al', (err, stdout, stderr) => {
+            if (err) {
+                return console.error(err);
+            }
+
+            console.log(stdout);
+        });
+    }
 }, 200);
 
 function takePicture(name) {
@@ -89,8 +102,9 @@ function watchHCSR04() {
                     prevDistance = distance;
                     if (diff > 10) {
                         let dateStr = new Date().toISOString();
-                        console.log('A motion is detected.')
-                        takePicture(dateStr);
+                        console.log('A motion is detected.');
+                        detectObj.motion = true;
+                        //takePicture(dateStr);
                     }
                 }
             }
