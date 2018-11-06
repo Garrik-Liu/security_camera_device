@@ -10,7 +10,7 @@ const serverUrl = "http://35.237.140.171/";
 const trigger = new Gpio(23, { mode: Gpio.OUTPUT });
 const echo = new Gpio(24, { mode: Gpio.INPUT, alert: true });
 
-exec('ffmpeg -f v4l2 -framerate 30 -video_size 640x360 -i /dev/video0 -f mpegts -codec:v mpeg1video -b:v 1800k -r 30 http://35.243.158.28:80/123456 -vf fps=1 out%d.png', (err, stdout, stderr) => {
+exec('ffmpeg -f v4l2 -framerate 30 -video_size 640x360 -i /dev/video0 -f mpegts -codec:v mpeg1video -b:v 1800k -r 30 http://35.243.158.28:80/123456 -vf fps=1 ./images/out%d.png', (err, stdout, stderr) => {
     if (err) {
         return console.error(err);
     }
@@ -83,7 +83,7 @@ function watchHCSR04() {
                     prevDistance = distance;
                     if (diff > 10) {
                         let dateStr = new Date().toISOString();
-
+                        console.log('A motion is detected.')
                         takePicture(dateStr);
                     }
                 }
