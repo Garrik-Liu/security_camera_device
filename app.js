@@ -1,10 +1,10 @@
 const exec = require('child_process').exec;
 const spawn = require('child_process').spawn;
-const Gpio = require('onoff').Gpio;
+// const Gpio = require('onoff').Gpio;
 const request = require('request');
 const fs = require('fs');
 
-const pir = new Gpio(17, 'in', 'both');
+// const pir = new Gpio(17, 'in', 'both');
 
 const MICROSECDONDS_PER_CM = 1e6 / 34321;
 const serverUrl = "http://35.237.140.171/";
