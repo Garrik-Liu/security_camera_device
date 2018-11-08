@@ -17,6 +17,7 @@
   },
   "homepage": "https://github.com/Garrik-Liu/security_camera_device#readme",
   "dependencies": {
+    "epoll": "^2.0.6",
     "express": "^4.16.4",
     "johnny-five": "^1.0.0",
     "jsonwebtoken": "^8.3.0",
