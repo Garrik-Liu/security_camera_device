@@ -4,7 +4,7 @@ const Gpio = require('onoff').Gpio;
 const request = require('request');
 const fs = require('fs');
 
-const pir = new Gpio(21, 'in', 'both');
+//const pir = new Gpio(21, 'in', 'both');
 
 const MICROSECDONDS_PER_CM = 1e6 / 34321;
 const serverUrl = "http://35.237.140.171/";
@@ -28,13 +28,13 @@ exec(
     }
 );
 
-pir.watch(function(err, value) {
-    if (err) {
-        return console.error(err);
-    }
-    console.log('movement is detected');
-    console.log(value);
-});
+// pir.watch(function(err, value) {
+//     if (err) {
+//         return console.error(err);
+//     }
+//     console.log('movement is detected');
+//     console.log(value);
+// });
 
 
 
