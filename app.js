@@ -28,13 +28,13 @@ exec(
     }
 );
 
-pir.watch(function(err, value) {
-    if (err) {
-        return console.error(err);
-    }
-    console.log('movement is detected');
-    console.log(value);
-});
+// pir.watch(function(err, value) {
+//     if (err) {
+//         return console.error(err);
+//     }
+//     console.log('movement is detected');
+//     console.log(value);
+// });
 
 
 
