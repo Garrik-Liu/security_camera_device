@@ -1,14 +1,14 @@
 const exec = require('child_process').exec;
 const spawn = require('child_process').spawn;
-const Gpio = require('pigpio').Gpio;
+const Gpio = require('onoff').Gpio;
 const request = require('request');
 const fs = require('fs');
+
+const pir = new Gpio(17, 'in', 'both');
 
 const MICROSECDONDS_PER_CM = 1e6 / 34321;
 const serverUrl = "http://35.237.140.171/";
 
-const trigger = new Gpio(23, { mode: Gpio.OUTPUT });
-const echo = new Gpio(24, { mode: Gpio.INPUT, alert: true });
 
 const detectObj = {
     motion: false,
@@ -28,99 +28,75 @@ exec(
     }
 );
 
-trigger.digitalWrite(0); // Make sure trigger is low
-
-watchHCSR04();
-
-setInterval(() => {
-    trigger.trigger(10, 1); // Set trigger high for 10 microseconds
-    exec('ls ' + __dirname + '/snapshots -l | grep "^-" | wc -l', (err, stdout, stderr) => {
-        if (err) {
-            return console.error(err);
-        }
-
-        let count = Number(stdout);
-
-        if (detectObj.motion) {
-
-            exec('ls -Art ' + __dirname + '/snapshots | tail -n 1', (err, stdout, stderr) => {
-                if (err) {
-                    return console.error(err);
-                }
-
-                let filename = stdout;
-
-                if (!detectObj.curTime || (detectObj.curTime - detectObj.prevTime) >= 2000) {
-                    postPicture(filename.trim());
-                    detectObj.prevTime = detectObj.curTime;
-                }
-
-                detectObj.motion = false;
-            })
-        }
-
-        if (count > 5 && !detectObj.motion) {
-            exec('sudo rm ' + __dirname + '/snapshots/*.png', (err, stdout, stderr) => {
-                if (err) {
-                    return console.error(err);
-                }
-            })
-        }
+pir.watch(function(err, value) {
+    if (err) {
+        return console.error(err);
+    }
+    console.log('movement is detected');
+    console.log(value);
+});
 
 
-    });
-}, 200);
 
-function postPicture(name) {
-    var formData = {
-        image: fs.createReadStream(__dirname + '/snapshots/' + name),
-    };
+// setInterval(() => {
+//     exec('ls ' + __dirname + '/snapshots -l | grep "^-" | wc -l', (err, stdout, stderr) => {
+//         if (err) {
+//             return console.error(err);
+//         }
 
-    request.post({ url: serverUrl + 'images/add', formData: formData }, function optionalCallback(err, response, body) {
+//         let count = Number(stdout);
 
-        if (err) {
-            return console.error(err);
-        }
-        console.log('error:', err); // Print the error if one occurred
-        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-        console.log(body);
+//         if (detectObj.motion) {
 
-    });
-}
+//             exec('ls -Art ' + __dirname + '/snapshots | tail -n 1', (err, stdout, stderr) => {
+//                 if (err) {
+//                     return console.error(err);
+//                 }
 
-function watchHCSR04() {
-    let startTick;
-    let prevDistance;
+//                 let filename = stdout;
 
-    echo.on('alert', (level, tick) => {
-        if (level == 1) {
-            startTick = tick;
-        } else {
-            const endTick = tick;
-            const diff = (endTick >> 0) - (startTick >> 0); // Unsigned 32 bit arithmetic
-            const distance = diff / 2 / MICROSECDONDS_PER_CM;
+//                 if (!detectObj.curTime || (detectObj.curTime - detectObj.prevTime) >= 2000) {
+//                     postPicture(filename.trim());
+//                     detectObj.prevTime = detectObj.curTime;
+//                 }
 
-            if (distance > 1) {
+//                 detectObj.motion = false;
+//             })
+//         }
 
-                if (!prevDistance) {
-                    prevDistance = distance;
-                } else {
-                    let diff = Math.abs(distance - prevDistance);
-                    prevDistance = distance;
+//         if (count > 5 && !detectObj.motion) {
+//             exec('sudo rm ' + __dirname + '/snapshots/*.png', (err, stdout, stderr) => {
+//                 if (err) {
+//                     return console.error(err);
+//                 }
+//             })
+//         }
 
-                    if (diff > 100) {
-                        console.log('A motion is detected.');
 
-                        detectObj.motion = true;
-                        if (!detectObj.prevTime) {
-                            detectObj.prevTime = new Date();
-                        } else {
-                            detectObj.curTime = new Date();
-                        }
+//     });
+// }, 200);
 
-                    }
-                }
-            }
-        }
-    });
-};
+// function postPicture(name) {
+//     var formData = {
+//         image: fs.createReadStream(__dirname + '/snapshots/' + name),
+//     };
+
+//     request.post({ url: serverUrl + 'images/add', formData: formData }, function optionalCallback(err, response, body) {
+
+//         if (err) {
+//             return console.error(err);
+//         }
+//         console.log('error:', err); // Print the error if one occurred
+//         console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+//         console.log(body);
+
+//     });
+// }
+
+
+// detectObj.motion = true;
+//                         if (!detectObj.prevTime) {
+//                             detectObj.prevTime = new Date();
+//                         } else {
+//                             detectObj.curTime = new Date();
+//                         }
