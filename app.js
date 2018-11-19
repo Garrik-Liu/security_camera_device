@@ -1,32 +1,41 @@
+const five = require("johnny-five");
+const Raspi = require("raspi-io");
 const exec = require('child_process').exec;
 const spawn = require('child_process').spawn;
 const Gpio = require('onoff').Gpio;
 const request = require('request');
 const fs = require('fs');
 
-const pir = new Gpio(21, 'in', 'both');
-
 const MICROSECDONDS_PER_CM = 1e6 / 34321;
 const serverUrl = "http://35.237.140.171/";
 
+const board = new five.Board({
+    io: new Raspi()
+});
 
-const detectObj = {
-    motion: false,
-    prevTime: null,
-    curTime: null
-}
+board.on("ready", function() {
+    var led = new five.Led("GPIO20");
+    led.blink();
 
-exec(
-    "ffmpeg -f v4l2 -framerate 30 -video_size 640x360 " +
-    "-i /dev/video0 -f mpegts -codec:v mpeg1video -b:v 1800k -r 30 " +
-    "http://35.243.158.28:80/123456 " +
-    "-vf fps=1 ./snapshots/snapshot%d.png",
-    (err, stdout, stderr) => {
-        if (err) {
-            return console.error(err);
-        }
+    const detectObj = {
+        motion: false,
+        prevTime: null,
+        curTime: null
     }
-);
+
+    exec(
+        "ffmpeg -f v4l2 -framerate 30 -video_size 640x360 " +
+        "-i /dev/video0 -f mpegts -codec:v mpeg1video -b:v 1800k -r 30 " +
+        "http://35.243.158.28:80/123456 " +
+        "-vf fps=1 ./snapshots/snapshot%d.png",
+        (err, stdout, stderr) => {
+            if (err) {
+                return console.error(err);
+            }
+        }
+    );
+});
+
 
 // pir.watch(function(err, value) {
 //     if (err) {
