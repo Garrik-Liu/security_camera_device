@@ -14,7 +14,8 @@ const board = new five.Board({
 });
 
 board.on("ready", function() {
-    var led = new five.Led("GPIO20");
+    var led = new five.Led("P1-38");
+    console.log(led)
     led.blink();
 
     const detectObj = {
