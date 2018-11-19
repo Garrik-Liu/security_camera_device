@@ -2,7 +2,6 @@ const five = require("johnny-five");
 const Raspi = require("raspi-io");
 const exec = require('child_process').exec;
 const spawn = require('child_process').spawn;
-const Gpio = require('onoff').Gpio;
 const request = require('request');
 const fs = require('fs');
 
@@ -15,7 +14,6 @@ const board = new five.Board({
 
 board.on("ready", function() {
     var led = new five.Led("P1-38");
-    console.log(led)
     led.blink();
 
     const detectObj = {
