@@ -88,7 +88,7 @@ function postPicture(name) {
         image: fs.createReadStream(__dirname + '/snapshots/' + name),
     };
 
-    request.post({ url: serverUrl + 'images/add', formData: formData }, function optionalCallback(err, response, body) {
+    request.post({ url: CONFIG.SnapshotServerUrl + 'images/add', formData: formData }, function optionalCallback(err, response, body) {
 
         if (err) {
             return console.error(err);
