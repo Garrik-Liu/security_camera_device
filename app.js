@@ -19,13 +19,13 @@ board.on("ready", function() {
 
     const detectObj = {
         motion: false,
-        prevTime: null,
-        curTime: null
+        prevTime: null
     }
 
     motionSensor.on("data", function(data) {
-        if (data.detectedMotion) {
+        if (data.detectedMotion && !detectObj.motion) {
             detectObj.motion = true;
+            detectObj.prevTime = new Date();
         }
     });
 
@@ -41,8 +41,6 @@ board.on("ready", function() {
 
             if (detectObj.motion) {
 
-                detectObj.motion = false;
-
                 exec('ls -Art ' + __dirname + '/snapshots | tail -n 1', (err, stdout, stderr) => {
                     if (err) {
                         return console.error(err);
@@ -50,15 +48,15 @@ board.on("ready", function() {
 
                     let filename = stdout;
 
-                    if (!detectObj.curTime || (detectObj.curTime - detectObj.prevTime) >= 2000) {
-                        postPicture(filename.trim());
-                        detectObj.prevTime = detectObj.curTime;
+                    if ((new Date() - detectObj.prevTime) >= 2000) {
+                        //postPicture(filename.trim());
+                        detectObj.motion = false;
                     }
                 })
             }
 
-            if (count > 5 && !detectObj.motion) {
-                console.log(11111)
+            if ((count > 5 && !detectObj.motion) || count > 10) {
+                console.log('delete snapshots')
                 exec('sudo rm ' + __dirname + '/snapshots/*.png', (err, stdout, stderr) => {
                     if (err) {
                         return console.error(err);
