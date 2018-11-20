@@ -33,6 +33,10 @@ board.on("ready", function() {
     motionSensor.on("motionend", function() {
         console.log("motionend", Date.now());
     });
+
+    motionSensor.on("data", function(data) {
+        console.log("data: ", data);
+    });
 });
 
 // const detectObj = {
