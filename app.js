@@ -30,7 +30,7 @@ board.on("ready", function() {
         }
     });
 
-    exec(
+    let streamProcess = exec(
         "ffmpeg -f v4l2 -framerate 30 -video_size 640x360 " +
         "-i /dev/video0 -f mpegts -codec:v mpeg1video -b:v 1800k -r 30 " +
         CONFIG.StreamServerUrl +
@@ -59,8 +59,8 @@ board.on("ready", function() {
 
                     let filename = stdout;
 
-                    if ((new Date() - detectObj.prevTime) >= 2000) {
-                        //postPicture(filename.trim());
+                    if ((new Date() - detectObj.prevTime) >= CONFIG.Interval) {
+                        postPicture(filename.trim());
                         detectObj.motion = false;
                     }
                 })
@@ -78,32 +78,24 @@ board.on("ready", function() {
     }, 200);
 
     this.on("exit", function() {
-
+        streamProcess.kill();
     });
 });
 
 
-// function postPicture(name) {
-//     var formData = {
-//         image: fs.createReadStream(__dirname + '/snapshots/' + name),
-//     };
+function postPicture(name) {
+    var formData = {
+        image: fs.createReadStream(__dirname + '/snapshots/' + name),
+    };
 
-//     request.post({ url: serverUrl + 'images/add', formData: formData }, function optionalCallback(err, response, body) {
+    request.post({ url: serverUrl + 'images/add', formData: formData }, function optionalCallback(err, response, body) {
 
-//         if (err) {
-//             return console.error(err);
-//         }
-//         console.log('error:', err); // Print the error if one occurred
-//         console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-//         console.log(body);
+        if (err) {
+            return console.error(err);
+        }
+        console.log('error:', err); // Print the error if one occurred
+        console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+        console.log(body);
 
-//     });
-// }
-
-
-// detectObj.motion = true;
-//                         if (!detectObj.prevTime) {
-//                             detectObj.prevTime = new Date();
-//                         } else {
-//                             detectObj.curTime = new Date();
-//                         }
+    });
+}
