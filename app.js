@@ -17,86 +17,71 @@ board.on("ready", function() {
     const led = new five.Led("GPIO20");
     const motionSensor = new five.Motion("GPIO21");
 
-    // "calibrated" occurs once, at the beginning of a session,
-    motionSensor.on("calibrated", function() {
-        console.log("calibrated", Date.now());
-    });
-
-    // "motionstart" events are fired when the "calibrated"
-    // proximal area is disrupted, generally by some form of movement
-    motionSensor.on("motionstart", function() {
-        console.log("motionstart", Date.now());
-    });
-
-    // "motionend" events are fired following a "motionstart" event
-    // when no movement has occurred in X ms
-    motionSensor.on("motionend", function() {
-        console.log("motionend", Date.now());
-    });
+    const detectObj = {
+        motion: false,
+        prevTime: null,
+        curTime: null
+    }
 
     motionSensor.on("data", function(data) {
-        console.log("data: ", data);
+        if (data.detectedMotion) {
+            detectObj.motion = true;
+        }
     });
+
+    streamToCloudServer()
+
+    setInterval(() => {
+        exec('ls ' + __dirname + '/snapshots -l | grep "^-" | wc -l', (err, stdout, stderr) => {
+            if (err) {
+                return console.error(err);
+            }
+
+            let count = Number(stdout);
+
+            if (detectObj.motion) {
+
+                detectObj.motion = false;
+
+                exec('ls -Art ' + __dirname + '/snapshots | tail -n 1', (err, stdout, stderr) => {
+                    if (err) {
+                        return console.error(err);
+                    }
+
+                    let filename = stdout;
+
+                    if (!detectObj.curTime || (detectObj.curTime - detectObj.prevTime) >= 2000) {
+                        postPicture(filename.trim());
+                        detectObj.prevTime = detectObj.curTime;
+                    }
+                })
+            }
+
+            if (count > 5 && !detectObj.motion) {
+                console.log(11111)
+                exec('sudo rm ' + __dirname + '/snapshots/*.png', (err, stdout, stderr) => {
+                    if (err) {
+                        return console.error(err);
+                    }
+                })
+            }
+        });
+    }, 200);
 });
 
-// const detectObj = {
-//     motion: false,
-//     prevTime: null,
-//     curTime: null
-// }
-
-// streamToCloudServer()
-// setInterval(() => {
-//     exec('ls ' + __dirname + '/snapshots -l | grep "^-" | wc -l', (err, stdout, stderr) => {
-//         if (err) {
-//             return console.error(err);
-//         }
-
-//         let count = Number(stdout);
-
-//         if (detectObj.motion) {
-
-//             exec('ls -Art ' + __dirname + '/snapshots | tail -n 1', (err, stdout, stderr) => {
-//                 if (err) {
-//                     return console.error(err);
-//                 }
-
-//                 let filename = stdout;
-
-//                 if (!detectObj.curTime || (detectObj.curTime - detectObj.prevTime) >= 2000) {
-//                     postPicture(filename.trim());
-//                     detectObj.prevTime = detectObj.curTime;
-//                 }
-
-//                 detectObj.motion = false;
-//             })
-//         }
-
-//         if (count > 5 && !detectObj.motion) {
-//             exec('sudo rm ' + __dirname + '/snapshots/*.png', (err, stdout, stderr) => {
-//                 if (err) {
-//                     return console.error(err);
-//                 }
-//             })
-//         }
-
-
-//     });
-// }, 200);
-
-// function streamToCloudServer() {
-//     exec(
-//         "ffmpeg -f v4l2 -framerate 30 -video_size 640x360 " +
-//         "-i /dev/video0 -f mpegts -codec:v mpeg1video -b:v 1800k -r 30 " +
-//         CONFIG.StreamServerUrl +
-//         " -vf fps=1 ./snapshots/snapshot%d.png",
-//         (err, stdout, stderr) => {
-//             if (err) {
-//                 return console.error(err);
-//             }
-//         }
-//     );
-// }
+function streamToCloudServer() {
+    exec(
+        "ffmpeg -f v4l2 -framerate 30 -video_size 640x360 " +
+        "-i /dev/video0 -f mpegts -codec:v mpeg1video -b:v 1800k -r 30 " +
+        CONFIG.StreamServerUrl +
+        " -vf fps=1 ./snapshots/snapshot%d.png",
+        (err, stdout, stderr) => {
+            if (err) {
+                return console.error(err);
+            }
+        }
+    );
+}
 
 
 // function postPicture(name) {
