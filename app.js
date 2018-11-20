@@ -29,7 +29,7 @@ board.on("ready", function() {
         }
     });
 
-    let streamProcess = exec(
+    exec(
         "ffmpeg -f v4l2 -framerate 30 -video_size 640x360 " +
         "-i /dev/video0 -f mpegts -codec:v mpeg1video -b:v 1800k -r 30 " +
         CONFIG.StreamServerUrl +
@@ -77,7 +77,7 @@ board.on("ready", function() {
     }, 200);
 
     this.on("exit", function() {
-        streamProcess.kill();
+
     });
 });
 
