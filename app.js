@@ -25,6 +25,45 @@ board.on("ready", function() {
         prevTime: null,
         curTime: null
     }
+
+    streamToCloudServer()
+    setInterval(() => {
+        exec('ls ' + __dirname + '/snapshots -l | grep "^-" | wc -l', (err, stdout, stderr) => {
+            if (err) {
+                return console.error(err);
+            }
+
+            let count = Number(stdout);
+
+            if (detectObj.motion) {
+
+                exec('ls -Art ' + __dirname + '/snapshots | tail -n 1', (err, stdout, stderr) => {
+                    if (err) {
+                        return console.error(err);
+                    }
+
+                    let filename = stdout;
+
+                    if (!detectObj.curTime || (detectObj.curTime - detectObj.prevTime) >= 2000) {
+                        postPicture(filename.trim());
+                        detectObj.prevTime = detectObj.curTime;
+                    }
+
+                    detectObj.motion = false;
+                })
+            }
+
+            if (count > 5 && !detectObj.motion) {
+                exec('sudo rm ' + __dirname + '/snapshots/*.png', (err, stdout, stderr) => {
+                    if (err) {
+                        return console.error(err);
+                    }
+                })
+            }
+
+
+        });
+    }, 200);
 });
 
 function streamToCloudServer() {
@@ -49,46 +88,6 @@ function streamToCloudServer() {
 //     console.log('movement is detected');
 //     console.log(value);
 // });
-
-
-
-setInterval(() => {
-    exec('ls ' + __dirname + '/snapshots -l | grep "^-" | wc -l', (err, stdout, stderr) => {
-        if (err) {
-            return console.error(err);
-        }
-
-        let count = Number(stdout);
-
-        if (detectObj.motion) {
-
-            exec('ls -Art ' + __dirname + '/snapshots | tail -n 1', (err, stdout, stderr) => {
-                if (err) {
-                    return console.error(err);
-                }
-
-                let filename = stdout;
-
-                if (!detectObj.curTime || (detectObj.curTime - detectObj.prevTime) >= 2000) {
-                    postPicture(filename.trim());
-                    detectObj.prevTime = detectObj.curTime;
-                }
-
-                detectObj.motion = false;
-            })
-        }
-
-        if (count > 5 && !detectObj.motion) {
-            exec('sudo rm ' + __dirname + '/snapshots/*.png', (err, stdout, stderr) => {
-                if (err) {
-                    return console.error(err);
-                }
-            })
-        }
-
-
-    });
-}, 200);
 
 // function postPicture(name) {
 //     var formData = {
