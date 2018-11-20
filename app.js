@@ -24,6 +24,7 @@ board.on("ready", function() {
 
     motionSensor.on("data", function(data) {
         if (data.detectedMotion && !detectObj.motion) {
+            console.log('A motion is detected')
             detectObj.motion = true;
             detectObj.prevTime = new Date();
         }
