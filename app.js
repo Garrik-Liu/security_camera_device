@@ -42,6 +42,10 @@ board.on("ready", function() {
         }
     );
 
+    streamProcess.on('exit', function(code) {
+        console.log('STREAM 子进程已关闭，代码：' + code);
+    });
+
     setInterval(() => {
         exec('ls ' + __dirname + '/snapshots -l | grep "^-" | wc -l', (err, stdout, stderr) => {
             if (err) {
