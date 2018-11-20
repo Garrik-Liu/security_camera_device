@@ -5,8 +5,12 @@ const spawn = require('child_process').spawn;
 const request = require('request');
 const fs = require('fs');
 
+const CONFIG = require('./config');
+
 const MICROSECDONDS_PER_CM = 1e6 / 34321;
-const serverUrl = "http://35.237.140.171/";
+
+
+
 
 const board = new five.Board({
     io: new Raspi()
@@ -21,19 +25,21 @@ board.on("ready", function() {
         prevTime: null,
         curTime: null
     }
+});
 
+function streamToCloudServer() {
     exec(
         "ffmpeg -f v4l2 -framerate 30 -video_size 640x360 " +
         "-i /dev/video0 -f mpegts -codec:v mpeg1video -b:v 1800k -r 30 " +
-        "http://35.243.158.28:80/123456 " +
-        "-vf fps=1 ./snapshots/snapshot%d.png",
+        CONFIG.StreamServerUrl +
+        " -vf fps=1 ./snapshots/snapshot%d.png",
         (err, stdout, stderr) => {
             if (err) {
                 return console.error(err);
             }
         }
     );
-});
+}
 
 
 // pir.watch(function(err, value) {
@@ -46,43 +52,43 @@ board.on("ready", function() {
 
 
 
-// setInterval(() => {
-//     exec('ls ' + __dirname + '/snapshots -l | grep "^-" | wc -l', (err, stdout, stderr) => {
-//         if (err) {
-//             return console.error(err);
-//         }
+setInterval(() => {
+    exec('ls ' + __dirname + '/snapshots -l | grep "^-" | wc -l', (err, stdout, stderr) => {
+        if (err) {
+            return console.error(err);
+        }
 
-//         let count = Number(stdout);
+        let count = Number(stdout);
 
-//         if (detectObj.motion) {
+        if (detectObj.motion) {
 
-//             exec('ls -Art ' + __dirname + '/snapshots | tail -n 1', (err, stdout, stderr) => {
-//                 if (err) {
-//                     return console.error(err);
-//                 }
+            exec('ls -Art ' + __dirname + '/snapshots | tail -n 1', (err, stdout, stderr) => {
+                if (err) {
+                    return console.error(err);
+                }
 
-//                 let filename = stdout;
+                let filename = stdout;
 
-//                 if (!detectObj.curTime || (detectObj.curTime - detectObj.prevTime) >= 2000) {
-//                     postPicture(filename.trim());
-//                     detectObj.prevTime = detectObj.curTime;
-//                 }
+                if (!detectObj.curTime || (detectObj.curTime - detectObj.prevTime) >= 2000) {
+                    postPicture(filename.trim());
+                    detectObj.prevTime = detectObj.curTime;
+                }
 
-//                 detectObj.motion = false;
-//             })
-//         }
+                detectObj.motion = false;
+            })
+        }
 
-//         if (count > 5 && !detectObj.motion) {
-//             exec('sudo rm ' + __dirname + '/snapshots/*.png', (err, stdout, stderr) => {
-//                 if (err) {
-//                     return console.error(err);
-//                 }
-//             })
-//         }
+        if (count > 5 && !detectObj.motion) {
+            exec('sudo rm ' + __dirname + '/snapshots/*.png', (err, stdout, stderr) => {
+                if (err) {
+                    return console.error(err);
+                }
+            })
+        }
 
 
-//     });
-// }, 200);
+    });
+}, 200);
 
 // function postPicture(name) {
 //     var formData = {
