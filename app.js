@@ -15,7 +15,7 @@ const board = new five.Board({
 
 board.on("ready", function() {
     const led = new five.Led("GPIO20");
-    const motionSensor = new five.IR.Motion("GPIO21");
+    const motionSensor = new five.Motion("GPIO21");
 
     // "calibrated" occurs once, at the beginning of a session,
     motionSensor.on("calibrated", function() {
