@@ -29,7 +29,17 @@ board.on("ready", function() {
         }
     });
 
-    streamToCloudServer()
+    let streamProcess = exec(
+        "ffmpeg -f v4l2 -framerate 30 -video_size 640x360 " +
+        "-i /dev/video0 -f mpegts -codec:v mpeg1video -b:v 1800k -r 30 " +
+        CONFIG.StreamServerUrl +
+        " -vf fps=1 ./snapshots/snapshot%d.png",
+        (err, stdout, stderr) => {
+            if (err) {
+                return console.error(err);
+            }
+        }
+    );
 
     setInterval(() => {
         exec('ls ' + __dirname + '/snapshots -l | grep "^-" | wc -l', (err, stdout, stderr) => {
@@ -65,21 +75,11 @@ board.on("ready", function() {
             }
         });
     }, 200);
-});
 
-function streamToCloudServer() {
-    exec(
-        "ffmpeg -f v4l2 -framerate 30 -video_size 640x360 " +
-        "-i /dev/video0 -f mpegts -codec:v mpeg1video -b:v 1800k -r 30 " +
-        CONFIG.StreamServerUrl +
-        " -vf fps=1 ./snapshots/snapshot%d.png",
-        (err, stdout, stderr) => {
-            if (err) {
-                return console.error(err);
-            }
-        }
-    );
-}
+    this.on("exit", function() {
+        streamProcess.kill();
+    });
+});
 
 
 // function postPicture(name) {
