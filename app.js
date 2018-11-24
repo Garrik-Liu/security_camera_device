@@ -84,7 +84,7 @@ board.on("ready", function() {
 socket.on('turnOn camera', function() {
     console.log('turn on');
     if (cameraInfo.status === 'off') {
-        streamProcess = exec(
+        exec(
             "ffmpeg -f v4l2 -framerate 30 -video_size 640x360 " +
             "-i /dev/video0 -f mpegts -codec:v mpeg1video -b:v 1800k -r 30 " +
             CONFIG.StreamServerUrl,
@@ -95,8 +95,6 @@ socket.on('turnOn camera', function() {
                 if (err) {
                     return console.error(err);
                 }
-
-                console.log(stdout)
             }
         );
 
@@ -108,7 +106,12 @@ socket.on('turnOn camera', function() {
 socket.on('turnOff camera', function() {
     console.log('turn off');
     if (cameraInfo.status === 'on') {
-        streamProcess.exit(0);
+        exec(`ps - ef | grep "ffmpeg" | grep - v grep | awk ' { print $2 }'`, (err, stdout, stderr) => {
+            if (err) {
+                return console.error(err);
+                console.log(stdout)
+            }
+        })
 
         cameraInfo.status = 'off';
         socket.emit('change device status', 'off')
