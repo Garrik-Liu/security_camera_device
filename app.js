@@ -106,7 +106,7 @@ socket.on('turnOn camera', function() {
 socket.on('turnOff camera', function() {
     console.log('turn off');
     if (cameraInfo.status === 'on') {
-        exec(`ps - ef | grep "ffmpeg" | grep - v grep | awk ' { print $2 }'`, (err, stdout, stderr) => {
+        exec(`ps -ef | grep "ffmpeg" | grep -v grep | awk '{ print $2 }'`, (err, stdout, stderr) => {
             if (err) {
                 return console.error(err);
             }
