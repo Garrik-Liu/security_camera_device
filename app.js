@@ -108,7 +108,7 @@ socket.on('turnOn camera', function() {
 socket.on('turnOff camera', function() {
     console.log('turn off');
     if (cameraInfo.status === 'on') {
-        streamProcess.kill();
+        streamProcess.kill('SIGHUP');
 
         cameraInfo.status = 'off';
         socket.emit('change device status', 'off')
