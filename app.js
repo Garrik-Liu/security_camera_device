@@ -10,6 +10,8 @@ const io = require('socket.io-client');
 const CONFIG = require('./config');
 const socket = io(CONFIG.ServerUrl);
 
+let processPid = null;
+
 let cameraInfo = {
     id: undefined,
     name: undefined,
@@ -93,6 +95,8 @@ socket.on('turnOn camera', function() {
                 if (err) {
                     return console.error(err);
                 }
+
+                console.log(stdout)
             }
         );
 
