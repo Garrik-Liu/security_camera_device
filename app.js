@@ -31,8 +31,6 @@ board.on("ready", function() {
         prevTime: null
     }
 
-    let streamProcess = null;
-
     motionSensor.on("data", function(data) {
         if (data.detectedMotion && !detectObj.motion) {
             console.log('A motion is detected')
@@ -41,43 +39,56 @@ board.on("ready", function() {
         }
     });
 
-    // setInterval(() => {
-    //     exec('ls ' + __dirname + '/snapshots -l | grep "^-" | wc -l', (err, stdout, stderr) => {
-    //         if (err) {
-    //             return console.error(err);
-    //         }
+    setInterval(() => {
+        exec('ls ' + __dirname + '/snapshots -l | grep "^-" | wc -l', (err, stdout, stderr) => {
+            if (err) {
+                return console.error(err);
+            }
 
-    //         let count = Number(stdout);
+            let count = Number(stdout);
 
-    //         if (detectObj.motion) {
+            if (detectObj.motion) {
 
-    //             exec('ls -Art ' + __dirname + '/snapshots | tail -n 1', (err, stdout, stderr) => {
-    //                 if (err) {
-    //                     return console.error(err);
-    //                 }
+                exec('ls -Art ' + __dirname + '/snapshots | tail -n 1', (err, stdout, stderr) => {
+                    if (err) {
+                        return console.error(err);
+                    }
 
-    //                 let filename = stdout;
+                    let filename = stdout;
 
-    //                 if ((new Date() - detectObj.prevTime) >= CONFIG.Interval) {
-    //                     postPicture(filename.trim());
-    //                     detectObj.motion = false;
-    //                 }
-    //             })
-    //         }
+                    if ((new Date() - detectObj.prevTime) >= CONFIG.Interval && cameraInfo.status === 'on') {
+                        postPicture(filename.trim());
+                        detectObj.motion = false;
+                    }
+                })
+            }
 
-    //         if ((count > 5 && !detectObj.motion) || count > 10) {
-    //             console.log('delete snapshots')
-    //             exec('sudo rm ' + __dirname + '/snapshots/*.png', (err, stdout, stderr) => {
-    //                 if (err) {
-    //                     return console.error(err);
-    //                 }
-    //             })
-    //         }
-    //     });
-    // }, 200);
+            if ((count > 5 && !detectObj.motion) || count > 10) {
+                console.log('delete snapshots')
+                exec('sudo rm ' + __dirname + '/snapshots/*.png', (err, stdout, stderr) => {
+                    if (err) {
+                        return console.error(err);
+                    }
+                })
+            }
+        });
+    }, 200);
 
     this.on("exit", function() {
-        streamProcess.kill();
+        exec(`ps -ef | grep "ffmpeg" | grep -v grep | awk '{ print $2 }'`, (err, stdout, stderr) => {
+            if (err) {
+                return console.error(err);
+            }
+
+            let pidArray = stdout.split('\n');
+
+            exec(`sudo kill -9 ${pidArray[0]} ${pidArray[1]}`, (err, stdout, stderr) => {
+                if (err) {
+                    return console.error(err);
+                }
+            })
+
+        })
     });
 });
 
@@ -87,10 +98,8 @@ socket.on('turnOn camera', function() {
         exec(
             "ffmpeg -f v4l2 -framerate 30 -video_size 640x360 " +
             "-i /dev/video0 -f mpegts -codec:v mpeg1video -b:v 1800k -r 30 " +
-            CONFIG.StreamServerUrl,
-
-            // +
-            // " -vf fps=1 ./snapshots/snapshot%d.png",
+            CONFIG.StreamServerUrl +
+            " -vf fps=1 ./snapshots/snapshot%d.png",
             (err, stdout, stderr) => {
                 if (err) {
                     return console.error(err);
