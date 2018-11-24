@@ -4,16 +4,16 @@ const exec = require('child_process').exec;
 const spawn = require('child_process').spawn;
 const request = require('request');
 const fs = require('fs');
-var socketIo = require('socket.io');
+var io = require('socket.io-client');
 
 const CONFIG = require('./config');
 
 const MICROSECDONDS_PER_CM = 1e6 / 34321;
 
 
-const io = socketIo(CONFIG.ServerUrl);
+const socket = io(CONFIG.ServerUrl);
 
-io.emit('test', 'Hello')
+socket.emit('test', 'Hello')
 
 const board = new five.Board({
     io: new Raspi()
