@@ -39,7 +39,7 @@ board.on("ready", function() {
     });
 
     socket.on('turnOn camera', function() {
-        console.log('turn on')
+        console.log('turn on');
         if (cameraInfo.status === 'off') {
             streamProcess = exec(
                 "ffmpeg -f v4l2 -framerate 30 -video_size 640x360 " +
@@ -52,15 +52,20 @@ board.on("ready", function() {
                     if (err) {
                         return console.error(err);
                     }
+
+                    cameraInfo.status = 'on';
+                    socket.emit('device status change', 'on')
                 }
             );
         }
     });
 
     socket.on('turnOff camera', function() {
-        console.log('turn off')
+        console.log('turn off');
         if (cameraInfo.status === 'on') {
             streamProcess.kill();
+            cameraInfo.status = 'off';
+            socket.emit('device status change', 'off')
         }
     });
 
