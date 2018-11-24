@@ -4,14 +4,23 @@ const exec = require('child_process').exec;
 const spawn = require('child_process').spawn;
 const request = require('request');
 const fs = require('fs');
+var socketIo = require('socket.io');
 
 const CONFIG = require('./config');
 
 const MICROSECDONDS_PER_CM = 1e6 / 34321;
 
+
+const io = socketIo(CONFIG.ServerUrl);
+
+io.emit('test', 'Hello')
+
 const board = new five.Board({
     io: new Raspi()
 });
+
+
+
 
 board.on("ready", function() {
     const led = new five.Led("GPIO20");
@@ -88,7 +97,7 @@ function postPicture(name) {
         image: fs.createReadStream(__dirname + '/snapshots/' + name),
     };
 
-    request.post({ url: CONFIG.SnapshotServerUrl + 'images/add', formData: formData }, function optionalCallback(err, response, body) {
+    request.post({ url: CONFIG.ServerUrl + 'images/add', formData: formData }, function optionalCallback(err, response, body) {
 
         if (err) {
             return console.error(err);
