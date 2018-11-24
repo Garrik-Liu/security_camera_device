@@ -112,7 +112,12 @@ socket.on('turnOff camera', function() {
             }
 
             let pidArray = stdout.split('\n');
-            console.log(stdout, pidArray)
+
+            exec(`sudo kill -9 ${pidArray[0]} ${pidArray[1]}`, (err, stdout, stderr) => {
+                if (err) {
+                    return console.error(err);
+                }
+            })
 
         })
 
