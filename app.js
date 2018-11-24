@@ -111,7 +111,7 @@ socket.on('turnOff camera', function() {
                 return console.error(err);
             }
 
-            console.log(stdout)
+            let pidArray = stdout.split('\n');
         })
 
         cameraInfo.status = 'off';
