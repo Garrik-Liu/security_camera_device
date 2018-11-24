@@ -39,54 +39,6 @@ board.on("ready", function() {
         }
     });
 
-    streamProcess = exec(
-        "ffmpeg -f v4l2 -framerate 30 -video_size 640x360 " +
-        "-i /dev/video0 -f mpegts -codec:v mpeg1video -b:v 1800k -r 30 " +
-        CONFIG.StreamServerUrl,
-
-        // +
-        // " -vf fps=1 ./snapshots/snapshot%d.png",
-        (err, stdout, stderr) => {
-            if (err) {
-                return console.error(err);
-            }
-        }
-    );
-
-    socket.on('turnOn camera', function() {
-        console.log('turn on');
-        if (cameraInfo.status === 'off') {
-            streamProcess = execFile(
-                "ffmpeg -f v4l2 -framerate 30 -video_size 640x360 " +
-                "-i /dev/video0 -f mpegts -codec:v mpeg1video -b:v 1800k -r 30 " +
-                CONFIG.StreamServerUrl,
-
-                // +
-                // " -vf fps=1 ./snapshots/snapshot%d.png",
-                (err, stdout, stderr) => {
-                    if (err) {
-                        return console.error(err);
-                    }
-                }
-            );
-
-            cameraInfo.status = 'on';
-            console.log(cameraInfo.status)
-            socket.emit('device status change', 'on')
-        }
-    });
-
-    socket.on('turnOff camera', function() {
-        console.log('turn off');
-        if (cameraInfo.status === 'on') {
-            streamProcess.kill();
-
-            cameraInfo.status = 'off';
-            console.log(cameraInfo.status)
-            socket.emit('change device status', 'off')
-        }
-    });
-
     // setInterval(() => {
     //     exec('ls ' + __dirname + '/snapshots -l | grep "^-" | wc -l', (err, stdout, stderr) => {
     //         if (err) {
@@ -125,6 +77,38 @@ board.on("ready", function() {
     this.on("exit", function() {
         streamProcess.kill();
     });
+});
+
+socket.on('turnOn camera', function() {
+    console.log('turn on');
+    if (cameraInfo.status === 'off') {
+        streamProcess = exec(
+            "ffmpeg -f v4l2 -framerate 30 -video_size 640x360 " +
+            "-i /dev/video0 -f mpegts -codec:v mpeg1video -b:v 1800k -r 30 " +
+            CONFIG.StreamServerUrl,
+
+            // +
+            // " -vf fps=1 ./snapshots/snapshot%d.png",
+            (err, stdout, stderr) => {
+                if (err) {
+                    return console.error(err);
+                }
+            }
+        );
+
+        cameraInfo.status = 'on';
+        socket.emit('device status change', 'on')
+    }
+});
+
+socket.on('turnOff camera', function() {
+    console.log('turn off');
+    if (cameraInfo.status === 'on') {
+        streamProcess.kill();
+
+        cameraInfo.status = 'off';
+        socket.emit('change device status', 'off')
+    }
 });
 
 function postPicture(name) {
