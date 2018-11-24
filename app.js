@@ -4,52 +4,65 @@ const exec = require('child_process').exec;
 const spawn = require('child_process').spawn;
 const request = require('request');
 const fs = require('fs');
-var io = require('socket.io-client');
+const io = require('socket.io-client');
 
 const CONFIG = require('./config');
-
-const MICROSECDONDS_PER_CM = 1e6 / 34321;
-
-
 const socket = io(CONFIG.ServerUrl);
 
-socket.emit('test', 'Hello')
+let cameraInfo = {
+    id: undefined,
+    name: undefined,
+    status: 'off'
+}
 
 const board = new five.Board({
     io: new Raspi()
 });
 
-
-
-
 board.on("ready", function() {
-    // const led = new five.Led("GPIO20");
-    // const motionSensor = new five.Motion("GPIO21");
+    const led = new five.Led("GPIO20");
+    const motionSensor = new five.Motion("GPIO21");
 
-    // const detectObj = {
-    //     motion: false,
-    //     prevTime: null
-    // }
+    const detectObj = {
+        motion: false,
+        prevTime: null
+    }
 
-    // motionSensor.on("data", function(data) {
-    //     if (data.detectedMotion && !detectObj.motion) {
-    //         console.log('A motion is detected')
-    //         detectObj.motion = true;
-    //         detectObj.prevTime = new Date();
-    //     }
-    // });
+    let streamProcess = null;
 
-    // let streamProcess = exec(
-    //     "ffmpeg -f v4l2 -framerate 30 -video_size 640x360 " +
-    //     "-i /dev/video0 -f mpegts -codec:v mpeg1video -b:v 1800k -r 30 " +
-    //     CONFIG.StreamServerUrl +
-    //     " -vf fps=1 ./snapshots/snapshot%d.png",
-    //     (err, stdout, stderr) => {
-    //         if (err) {
-    //             return console.error(err);
-    //         }
-    //     }
-    // );
+    motionSensor.on("data", function(data) {
+        if (data.detectedMotion && !detectObj.motion) {
+            console.log('A motion is detected')
+            detectObj.motion = true;
+            detectObj.prevTime = new Date();
+        }
+    });
+
+    socket.on('turnOn camera', function() {
+        console.log('turn on')
+        if (cameraInfo.status === 'off') {
+            streamProcess = exec(
+                "ffmpeg -f v4l2 -framerate 30 -video_size 640x360 " +
+                "-i /dev/video0 -f mpegts -codec:v mpeg1video -b:v 1800k -r 30 " +
+                CONFIG.StreamServerUrl,
+
+                // +
+                // " -vf fps=1 ./snapshots/snapshot%d.png",
+                (err, stdout, stderr) => {
+                    if (err) {
+                        return console.error(err);
+                    }
+                }
+            );
+        }
+    });
+
+    socket.on('turnOff camera', function() {
+        console.log('turn off')
+        if (cameraInfo.status === 'on') {
+            streamProcess.kill();
+        }
+    });
 
     // setInterval(() => {
     //     exec('ls ' + __dirname + '/snapshots -l | grep "^-" | wc -l', (err, stdout, stderr) => {
@@ -86,11 +99,10 @@ board.on("ready", function() {
     //     });
     // }, 200);
 
-    // this.on("exit", function() {
-    //     streamProcess.kill();
-    // });
+    this.on("exit", function() {
+        streamProcess.kill();
+    });
 });
-
 
 function postPicture(name) {
     var formData = {
