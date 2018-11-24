@@ -52,8 +52,8 @@ board.on("ready", function() {
                     if (err) {
                         return console.error(err);
                     }
-
                     cameraInfo.status = 'on';
+                    console.log(streamProcess, cameraInfo.status)
                     socket.emit('device status change', 'on')
                 }
             );
@@ -65,7 +65,8 @@ board.on("ready", function() {
         if (cameraInfo.status === 'on') {
             streamProcess.kill();
             cameraInfo.status = 'off';
-            socket.emit('device status change', 'off')
+            console.log(cameraInfo.status)
+            socket.emit('change device status', 'off')
         }
     });
 
