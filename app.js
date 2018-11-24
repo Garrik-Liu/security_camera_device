@@ -108,7 +108,7 @@ socket.on('turnOn camera', function() {
         );
 
         cameraInfo.status = 'on';
-        socket.emit('device status change', 'on')
+        socket.emit('change device status', 'on')
     }
 });
 
