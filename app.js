@@ -23,72 +23,72 @@ const board = new five.Board({
 
 
 board.on("ready", function() {
-    const led = new five.Led("GPIO20");
-    const motionSensor = new five.Motion("GPIO21");
+    // const led = new five.Led("GPIO20");
+    // const motionSensor = new five.Motion("GPIO21");
 
-    const detectObj = {
-        motion: false,
-        prevTime: null
-    }
+    // const detectObj = {
+    //     motion: false,
+    //     prevTime: null
+    // }
 
-    motionSensor.on("data", function(data) {
-        if (data.detectedMotion && !detectObj.motion) {
-            console.log('A motion is detected')
-            detectObj.motion = true;
-            detectObj.prevTime = new Date();
-        }
-    });
+    // motionSensor.on("data", function(data) {
+    //     if (data.detectedMotion && !detectObj.motion) {
+    //         console.log('A motion is detected')
+    //         detectObj.motion = true;
+    //         detectObj.prevTime = new Date();
+    //     }
+    // });
 
-    let streamProcess = exec(
-        "ffmpeg -f v4l2 -framerate 30 -video_size 640x360 " +
-        "-i /dev/video0 -f mpegts -codec:v mpeg1video -b:v 1800k -r 30 " +
-        CONFIG.StreamServerUrl +
-        " -vf fps=1 ./snapshots/snapshot%d.png",
-        (err, stdout, stderr) => {
-            if (err) {
-                return console.error(err);
-            }
-        }
-    );
+    // let streamProcess = exec(
+    //     "ffmpeg -f v4l2 -framerate 30 -video_size 640x360 " +
+    //     "-i /dev/video0 -f mpegts -codec:v mpeg1video -b:v 1800k -r 30 " +
+    //     CONFIG.StreamServerUrl +
+    //     " -vf fps=1 ./snapshots/snapshot%d.png",
+    //     (err, stdout, stderr) => {
+    //         if (err) {
+    //             return console.error(err);
+    //         }
+    //     }
+    // );
 
-    setInterval(() => {
-        exec('ls ' + __dirname + '/snapshots -l | grep "^-" | wc -l', (err, stdout, stderr) => {
-            if (err) {
-                return console.error(err);
-            }
+    // setInterval(() => {
+    //     exec('ls ' + __dirname + '/snapshots -l | grep "^-" | wc -l', (err, stdout, stderr) => {
+    //         if (err) {
+    //             return console.error(err);
+    //         }
 
-            let count = Number(stdout);
+    //         let count = Number(stdout);
 
-            if (detectObj.motion) {
+    //         if (detectObj.motion) {
 
-                exec('ls -Art ' + __dirname + '/snapshots | tail -n 1', (err, stdout, stderr) => {
-                    if (err) {
-                        return console.error(err);
-                    }
+    //             exec('ls -Art ' + __dirname + '/snapshots | tail -n 1', (err, stdout, stderr) => {
+    //                 if (err) {
+    //                     return console.error(err);
+    //                 }
 
-                    let filename = stdout;
+    //                 let filename = stdout;
 
-                    if ((new Date() - detectObj.prevTime) >= CONFIG.Interval) {
-                        postPicture(filename.trim());
-                        detectObj.motion = false;
-                    }
-                })
-            }
+    //                 if ((new Date() - detectObj.prevTime) >= CONFIG.Interval) {
+    //                     postPicture(filename.trim());
+    //                     detectObj.motion = false;
+    //                 }
+    //             })
+    //         }
 
-            if ((count > 5 && !detectObj.motion) || count > 10) {
-                console.log('delete snapshots')
-                exec('sudo rm ' + __dirname + '/snapshots/*.png', (err, stdout, stderr) => {
-                    if (err) {
-                        return console.error(err);
-                    }
-                })
-            }
-        });
-    }, 200);
+    //         if ((count > 5 && !detectObj.motion) || count > 10) {
+    //             console.log('delete snapshots')
+    //             exec('sudo rm ' + __dirname + '/snapshots/*.png', (err, stdout, stderr) => {
+    //                 if (err) {
+    //                     return console.error(err);
+    //                 }
+    //             })
+    //         }
+    //     });
+    // }, 200);
 
-    this.on("exit", function() {
-        streamProcess.kill();
-    });
+    // this.on("exit", function() {
+    //     streamProcess.kill();
+    // });
 });
 
 
