@@ -52,11 +52,12 @@ board.on("ready", function() {
                     if (err) {
                         return console.error(err);
                     }
-                    cameraInfo.status = 'on';
-                    console.log(streamProcess, cameraInfo.status)
-                    socket.emit('device status change', 'on')
                 }
             );
+
+            cameraInfo.status = 'on';
+            console.log(streamProcess, cameraInfo.status)
+            socket.emit('device status change', 'on')
         }
     });
 
@@ -64,6 +65,7 @@ board.on("ready", function() {
         console.log('turn off');
         if (cameraInfo.status === 'on') {
             streamProcess.kill();
+
             cameraInfo.status = 'off';
             console.log(cameraInfo.status)
             socket.emit('change device status', 'off')
